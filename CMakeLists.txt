@@ -3,11 +3,14 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(GEODE_DISABLE_PRECOMPILED_HEADERS ON)
 
-project(LevelSize VERSION 1.2.3)
+project(LevelSize VERSION 1.2.4)
 
 add_library(${PROJECT_NAME} SHARED
-    src/main.cpp
+    src/hooks/LevelBrowserLayer.cpp
+    src/hooks/LevelCell.cpp
+    src/LevelSize.cpp
 )
 
 if (NOT DEFINED ENV{GEODE_SDK})

@@ -1,14 +1,14 @@
 {
-    "geode": "4.0.1",
+    "geode": "4.3.1",
     "gd": {
         "win": "2.2074",
         "mac": "2.2074",
         "android": "2.2074"
     },
-    "version": "v1.2.3",
+    "version": "v1.2.4",
     "id": "hiimjustin000.level_size",
     "name": "Level Size",
-    "developer": "hiimjustin000",
+    "developer": "hiimjasmine00",
     "description": "A mod that shows local and saved level sizes.",
     "resources": {
         "sprites": [
@@ -38,13 +38,14 @@
             "name": "White Size",
             "description": "Whether or not to show the size of a saved level in white.",
             "type": "bool",
+            "enable-if": "show-size",
             "default": false
         }
     },
     "links": {
         "community": "https://discord.gg/QVKmbvBXA7",
-        "source": "https://github.com/hiimjustin000/LevelSize",
-        "homepage": "https://www.hiimjustin000.com"
+        "source": "https://github.com/hiimjasmine00/LevelSize",
+        "homepage": "https://www.hiimjasmine00.com"
     },
     "tags": [
         "enhancement",

@@ -13,16 +13,16 @@ using namespace geode::prelude;
 
 class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
     struct Fields {
-        inline static bool LOCAL_SORT_BY_SIZE = false;
-        inline static bool SAVED_SORT_BY_SIZE = false;
-
         CCLabelBMFont* m_totalSizeLabel;
         CCLabelBMFont* m_overallSizeLabel;
     };
 
+    inline static bool localSortBySize = false;
+    inline static bool savedSortBySize = false;
+
     bool sizeSortEnabled() {
         auto searchType = m_searchObject->m_searchType;
-        return (searchType == SearchType::MyLevels && Fields::LOCAL_SORT_BY_SIZE) || (searchType == SearchType::SavedLevels && Fields::SAVED_SORT_BY_SIZE);
+        return (searchType == SearchType::MyLevels && localSortBySize) || (searchType == SearchType::SavedLevels && savedSortBySize);
     }
 
     static size_t getTotalSize(CCArray* levels) {
@@ -83,8 +83,8 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
 
     void onSizeSort(CCObject* sender) {
         auto searchType = m_searchObject->m_searchType;
-        if (searchType == SearchType::MyLevels) Fields::LOCAL_SORT_BY_SIZE = !Fields::LOCAL_SORT_BY_SIZE;
-        else if (searchType == SearchType::SavedLevels) Fields::SAVED_SORT_BY_SIZE = !Fields::SAVED_SORT_BY_SIZE;
+        if (searchType == SearchType::MyLevels) localSortBySize = !localSortBySize;
+        else if (searchType == SearchType::SavedLevels) savedSortBySize = !savedSortBySize;
         else return;
 
         static_cast<ButtonSprite*>(static_cast<CCMenuItemSprite*>(sender)->getNormalImage())->updateBGImage(

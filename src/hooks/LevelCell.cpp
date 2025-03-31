@@ -6,21 +6,22 @@ using namespace geode::prelude;
 
 class $modify(LSLevelCell, LevelCell) {
     static void onModify(ModifyBase<ModifyDerive<LSLevelCell, LevelCell>>& self) {
-        auto hook = self.getHook("LevelCell::loadFromLevel").mapErr([](const std::string& err) {
+        (void)self.getHook("LevelCell::loadFromLevel").map([](Hook* hook) {
+            auto mod = Mod::get();
+            hook->setAutoEnable(mod->getSettingValue<bool>("show-size"));
+
+            listenForSettingChanges<bool>("show-size", [hook](bool value) {
+                (void)(value ? hook->enable().mapErr([](const std::string& err) {
+                    return log::error("Failed to enable LevelCell::loadFromLevel hook: {}", err), err;
+                }) : hook->disable().mapErr([](const std::string& err) {
+                    return log::error("Failed to disable LevelCell::loadFromLevel hook: {}", err), err;
+                }));
+            }, mod);
+
+            return hook;
+        }).mapErr([](const std::string& err) {
             return log::error("Failed to get LevelCell::loadFromLevel hook: {}", err), err;
-        }).unwrapOr(nullptr);
-        if (!hook) return;
-
-        auto mod = Mod::get();
-        hook->setAutoEnable(mod->getSettingValue<bool>("show-size"));
-
-        listenForSettingChanges<bool>("show-size", [hook](bool value) {
-            (void)(value ? hook->enable().mapErr([](const std::string& err) {
-                return log::error("Failed to enable LevelCell::loadFromLevel hook: {}", err), err;
-            }) : hook->disable().mapErr([](const std::string& err) {
-                return log::error("Failed to disable LevelCell::loadFromLevel hook: {}", err), err;
-            }));
-        }, mod);
+        });
     }
 
     void loadFromLevel(GJGameLevel* level) {

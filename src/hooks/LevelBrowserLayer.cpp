@@ -10,7 +10,6 @@
 #include <numeric>
 
 using namespace geode::prelude;
-using enum SearchType;
 
 class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
     struct Fields {
@@ -23,7 +22,7 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
 
     bool sizeSortEnabled() {
         auto searchType = m_searchObject->m_searchType;
-        return (searchType == MyLevels && Fields::LOCAL_SORT_BY_SIZE) || (searchType == SavedLevels && Fields::SAVED_SORT_BY_SIZE);
+        return (searchType == SearchType::MyLevels && Fields::LOCAL_SORT_BY_SIZE) || (searchType == SearchType::SavedLevels && Fields::SAVED_SORT_BY_SIZE);
     }
 
     static size_t getTotalSize(CCArray* levels) {
@@ -37,7 +36,7 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
         if (!LevelBrowserLayer::init(searchObject)) return false;
 
         auto searchType = searchObject->m_searchType;
-        if (searchType != MyLevels && searchType != SavedLevels) return true;
+        if (searchType != SearchType::MyLevels && searchType != SearchType::SavedLevels) return true;
 
         auto winSize = CCDirector::get()->getWinSize();
 
@@ -84,8 +83,8 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
 
     void onSizeSort(CCObject* sender) {
         auto searchType = m_searchObject->m_searchType;
-        if (searchType == MyLevels) Fields::LOCAL_SORT_BY_SIZE = !Fields::LOCAL_SORT_BY_SIZE;
-        else if (searchType == SavedLevels) Fields::SAVED_SORT_BY_SIZE = !Fields::SAVED_SORT_BY_SIZE;
+        if (searchType == SearchType::MyLevels) Fields::LOCAL_SORT_BY_SIZE = !Fields::LOCAL_SORT_BY_SIZE;
+        else if (searchType == SearchType::SavedLevels) Fields::SAVED_SORT_BY_SIZE = !Fields::SAVED_SORT_BY_SIZE;
         else return;
 
         static_cast<ButtonSprite*>(static_cast<CCMenuItemSprite*>(sender)->getNormalImage())->updateBGImage(
@@ -97,8 +96,8 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
 
     CCArray* getLevelArray() {
         switch (m_searchObject->m_searchType) {
-            case MyLevels: return LocalLevelManager::get()->getCreatedLevels(m_searchObject->m_folder);
-            case SavedLevels: return GameLevelManager::get()->getSavedLevels(false, m_searchObject->m_folder);
+            case SearchType::MyLevels: return LocalLevelManager::get()->getCreatedLevels(m_searchObject->m_folder);
+            case SearchType::SavedLevels: return GameLevelManager::get()->getSavedLevels(false, m_searchObject->m_folder);
             default: return nullptr;
         }
     }
@@ -127,7 +126,7 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
 
     void setupLevelBrowser(CCArray* levels) {
         auto searchType = m_searchObject->m_searchType;
-        if (searchType != MyLevels && searchType != SavedLevels) return LevelBrowserLayer::setupLevelBrowser(levels);
+        if (searchType != SearchType::MyLevels && searchType != SearchType::SavedLevels) return LevelBrowserLayer::setupLevelBrowser(levels);
 
         if (sizeSortEnabled()) sortLevelsBySize();
         else LevelBrowserLayer::setupLevelBrowser(levels);

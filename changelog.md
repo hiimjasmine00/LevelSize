@@ -1,4 +1,7 @@
 # Level Size Changelog
+## v1.2.5 (2025-04-01)
+- Internal code changes (April Fools' Day)
+
 ## v1.2.4 (2025-03-24)
 - Fixed the position of the total size and overall size labels when only one of them is visible
 

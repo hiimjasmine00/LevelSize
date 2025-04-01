@@ -10,7 +10,7 @@ class $modify(LSLevelCell, LevelCell) {
             auto mod = Mod::get();
             hook->setAutoEnable(mod->getSettingValue<bool>("show-size"));
 
-            listenForSettingChanges<bool>("show-size", [hook](bool value) {
+            listenForSettingChangesV3<bool>("show-size", [hook](bool value) {
                 (void)(value ? hook->enable().mapErr([](const std::string& err) {
                     return log::error("Failed to enable LevelCell::loadFromLevel hook: {}", err), err;
                 }) : hook->disable().mapErr([](const std::string& err) {

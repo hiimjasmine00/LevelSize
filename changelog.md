@@ -1,4 +1,7 @@
 # Level Size Changelog
+## v1.2.6 (2025-04-05)
+- Added support for iOS
+
 ## v1.2.5 (2025-04-01)
 - Internal code changes (April Fools' Day)
 

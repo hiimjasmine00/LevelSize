@@ -3,9 +3,10 @@
     "gd": {
         "win": "2.2074",
         "mac": "2.2074",
-        "android": "2.2074"
+        "android": "2.2074",
+        "ios": "2.2074"
     },
-    "version": "v1.2.5",
+    "version": "v1.2.6",
     "id": "hiimjustin000.level_size",
     "name": "Level Size",
     "developer": "hiimjasmine00",

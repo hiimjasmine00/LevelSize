@@ -1,7 +1,7 @@
 #include "LevelSize.hpp"
 #include <fmt/format.h>
 
-std::string LevelSize::getSizeString(size_t size) {
+std::string LevelSize::getSizeString(uint64_t size) {
     auto divisor = 0.0;
     auto suffix = "";
     if (size < 1024) {

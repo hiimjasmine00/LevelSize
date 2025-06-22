@@ -25,9 +25,9 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
         return (searchType == SearchType::MyLevels && localSortBySize) || (searchType == SearchType::SavedLevels && savedSortBySize);
     }
 
-    static size_t getTotalSize(CCArray* levels) {
+    static uint64_t getTotalSize(CCArray* levels) {
         auto levelsArray = reinterpret_cast<GJGameLevel**>(levels->data->arr);
-        return std::accumulate(levelsArray, levelsArray + levels->count(), (size_t)0, [](size_t acc, GJGameLevel* level) {
+        return std::accumulate<GJGameLevel**, uint64_t>(levelsArray, levelsArray + levels->data->num, 0, [](uint64_t acc, GJGameLevel* level) {
             return acc + level->m_levelString.size();
         });
     }

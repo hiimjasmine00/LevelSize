@@ -6,47 +6,54 @@ using namespace geode::prelude;
 
 class $modify(LSLevelCell, LevelCell) {
     static void onModify(ModifyBase<ModifyDerive<LSLevelCell, LevelCell>>& self) {
-        (void)self.getHook("LevelCell::loadFromLevel").map([](Hook* hook) {
+        (void)self.getHook("LevelCell::loadFromLevel").inspect([](Hook* hook) {
             auto mod = Mod::get();
             hook->setAutoEnable(mod->getSettingValue<bool>("show-size"));
 
             listenForSettingChangesV3<bool>("show-size", [hook](bool value) {
-                (void)(value ? hook->enable().mapErr([](const std::string& err) {
-                    return log::error("Failed to enable LevelCell::loadFromLevel hook: {}", err), err;
-                }) : hook->disable().mapErr([](const std::string& err) {
-                    return log::error("Failed to disable LevelCell::loadFromLevel hook: {}", err), err;
+                (void)(value ? hook->enable().inspectErr([](const std::string& err) {
+                    log::error("Failed to enable LevelCell::loadFromLevel hook: {}", err);
+                }) : hook->disable().inspectErr([](const std::string& err) {
+                    log::error("Failed to disable LevelCell::loadFromLevel hook: {}", err);
                 }));
             }, mod);
-
-            return hook;
-        }).mapErr([](const std::string& err) {
-            return log::error("Failed to get LevelCell::loadFromLevel hook: {}", err), err;
-        });
+        }).inspectErr([](const std::string& err) { log::error("Failed to get LevelCell::loadFromLevel hook: {}", err); });
     }
 
     void loadFromLevel(GJGameLevel* level) {
         LevelCell::loadFromLevel(level);
 
-        if (level->m_levelType == GJLevelType::Editor) {
-            auto sizeLabel = CCLabelBMFont::create(LevelSize::getSizeString(level->m_levelString.size()).c_str(), "goldFont.fnt");
-            sizeLabel->setPosition({ 350.0f, 3.0f });
-            sizeLabel->setScale(0.4f);
-            sizeLabel->setAnchorPoint({ 1.0f, 0.0f });
-            sizeLabel->setID("size-label"_spr);
-            m_mainLayer->addChild(sizeLabel);
+        auto levelType = level->m_levelType;
+        if (levelType != GJLevelType::Editor && levelType != GJLevelType::Saved) return;
+
+        auto sizeLabel = CCLabelBMFont::create(LevelSize::getSizeString(level->m_levelString.size()).c_str(), "goldFont.fnt");
+
+        switch (levelType) {
+            case GJLevelType::Editor: {
+                sizeLabel->setPosition({ 350.0f, 3.0f });
+                sizeLabel->setScale(0.4f);
+                break;
+            }
+            case GJLevelType::Saved: {
+                auto isDaily = level->m_dailyID.value() > 0;
+                auto whiteSize = isDaily || Mod::get()->getSettingValue<bool>("white-size");
+
+                sizeLabel->setPosition({ 363.0f - isDaily * 17.0f, 1.0f - isDaily * 6.0f });
+                sizeLabel->setScale(0.6f - m_compactView * 0.15f);
+                sizeLabel->setColor({
+                    (uint8_t)(51 * (whiteSize * 4 + 1)),
+                    (uint8_t)(51 * (whiteSize * 4 + 1)),
+                    (uint8_t)(51 * (whiteSize * 4 + 1))
+                });
+                sizeLabel->setOpacity(200 - whiteSize * 48);
+                break;
+            }
+            default:
+                break;
         }
-        else if (level->m_levelType == GJLevelType::Saved) {
-            auto sizeLabel = CCLabelBMFont::create(LevelSize::getSizeString(level->m_levelString.size()).c_str(), "chatFont.fnt");
-            sizeLabel->setPosition({ 346.0f, 1.0f });
-            auto isDaily = level->m_dailyID.value() > 0;
-            if (isDaily) sizeLabel->setPosition({ 363.0f, -5.0f });
-            sizeLabel->setScale(m_compactView ? 0.45f : 0.6f);
-            auto whiteSize = Mod::get()->getSettingValue<bool>("white-size") || isDaily;
-            sizeLabel->setColor(whiteSize ? ccColor3B { 255, 255, 255 } : ccColor3B { 51, 51, 51 });
-            sizeLabel->setOpacity(whiteSize ? 200 : 152);
-            sizeLabel->setAnchorPoint({ 1.0f, 0.0f });
-            sizeLabel->setID("size-label"_spr);
-            m_mainLayer->addChild(sizeLabel);
-        }
+
+        sizeLabel->setAnchorPoint({ 1.0f, 0.0f });
+        sizeLabel->setID("size-label"_spr);
+        m_mainLayer->addChild(sizeLabel);
     }
 };

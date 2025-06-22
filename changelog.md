@@ -1,4 +1,7 @@
 # Level Size Changelog
+## v1.2.7 (2025-06-22)
+- Ported to Geode v4.6.1
+
 ## v1.2.6 (2025-04-05)
 - Added support for iOS
 

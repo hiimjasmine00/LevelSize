@@ -1,4 +1,7 @@
 # Level Size Changelog
+## v1.2.8 (2025-06-23)
+- I don't want to talk about it
+
 ## v1.2.7 (2025-06-22)
 - Ported to Geode v4.6.1
 

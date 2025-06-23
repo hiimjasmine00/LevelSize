@@ -1,5 +1,5 @@
 # Level Size
-A mod that shows local and saved level sizes.
+Local and saved level sizes.
 
 ## Features
 - A label that shows the size of the current level in the local and saved level browsers

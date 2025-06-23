@@ -23,37 +23,36 @@ class $modify(LSLevelCell, LevelCell) {
     void loadFromLevel(GJGameLevel* level) {
         LevelCell::loadFromLevel(level);
 
-        auto levelType = level->m_levelType;
-        if (levelType != GJLevelType::Editor && levelType != GJLevelType::Saved) return;
-
-        auto sizeLabel = CCLabelBMFont::create(LevelSize::getSizeString(level->m_levelString.size()).c_str(), "goldFont.fnt");
-
-        switch (levelType) {
+        switch (level->m_levelType) {
             case GJLevelType::Editor: {
+                auto sizeLabel = CCLabelBMFont::create(LevelSize::getSizeString(level->m_levelString.size()).c_str(), "goldFont.fnt");
                 sizeLabel->setPosition({ 350.0f, 3.0f });
                 sizeLabel->setScale(0.4f);
+                sizeLabel->setAnchorPoint({ 1.0f, 0.0f });
+                sizeLabel->setID("size-label"_spr);
+                m_mainLayer->addChild(sizeLabel);
                 break;
             }
             case GJLevelType::Saved: {
                 auto isDaily = level->m_dailyID.value() > 0;
                 auto whiteSize = isDaily || Mod::get()->getSettingValue<bool>("white-size");
 
+                auto sizeLabel = CCLabelBMFont::create(LevelSize::getSizeString(level->m_levelString.size()).c_str(), "chatFont.fnt");
                 sizeLabel->setPosition({ 363.0f - isDaily * 17.0f, 1.0f - isDaily * 6.0f });
                 sizeLabel->setScale(0.6f - m_compactView * 0.15f);
+                sizeLabel->setAnchorPoint({ 1.0f, 0.0f });
                 sizeLabel->setColor({
                     (uint8_t)(51 * (whiteSize * 4 + 1)),
                     (uint8_t)(51 * (whiteSize * 4 + 1)),
                     (uint8_t)(51 * (whiteSize * 4 + 1))
                 });
                 sizeLabel->setOpacity(200 - whiteSize * 48);
+                sizeLabel->setID("size-label"_spr);
+                m_mainLayer->addChild(sizeLabel);
                 break;
             }
             default:
                 break;
         }
-
-        sizeLabel->setAnchorPoint({ 1.0f, 0.0f });
-        sizeLabel->setID("size-label"_spr);
-        m_mainLayer->addChild(sizeLabel);
     }
 };

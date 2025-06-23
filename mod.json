@@ -6,11 +6,11 @@
         "android": "2.2074",
         "ios": "2.2074"
     },
-    "version": "v1.2.7",
+    "version": "v1.2.8",
     "id": "hiimjustin000.level_size",
     "name": "Level Size",
     "developer": "hiimjasmine00",
-    "description": "A mod that shows local and saved level sizes.",
+    "description": "Local and saved level sizes.",
     "resources": {
         "sprites": [
             "resources/*.png"

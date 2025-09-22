@@ -1,4 +1,7 @@
 # Level Size Changelog
+## v1.2.9 (2025-09-21)
+- Fixed the level size label on online levels (Why did this take three months to fix?)
+
 ## v1.2.8 (2025-06-23)
 - I don't want to talk about it
 

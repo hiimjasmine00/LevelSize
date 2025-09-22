@@ -25,13 +25,6 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
         return (searchType == SearchType::MyLevels && localSortBySize) || (searchType == SearchType::SavedLevels && savedSortBySize);
     }
 
-    static uint64_t getTotalSize(CCArray* levels) {
-        auto levelsArray = reinterpret_cast<GJGameLevel**>(levels->data->arr);
-        return std::accumulate<GJGameLevel**, uint64_t>(levelsArray, levelsArray + levels->data->num, 0, [](uint64_t acc, GJGameLevel* level) {
-            return acc + level->m_levelString.size();
-        });
-    }
-
     bool init(GJSearchObject* searchObject) {
         if (!LevelBrowserLayer::init(searchObject)) return false;
 
@@ -59,26 +52,44 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
         if (!showTotalSize && !showOverallSize) return true;
 
         if (showTotalSize) {
-            f->m_totalSizeLabel = CCLabelBMFont::create(fmt::format("Total Size: {}",
-                LevelSize::getSizeString(getTotalSize(m_list->m_listView->m_entries))).c_str(), "bigFont.fnt");
-            f->m_totalSizeLabel->setScale(0.4f);
-            f->m_totalSizeLabel->limitLabelWidth(130.0f, 0.4f, 0.0f);
-            f->m_totalSizeLabel->setPosition(winSize / 2.0f + CCPoint { 95.0f, -122.0f + (showOverallSize * 6.0f) });
+            f->m_totalSizeLabel = CCLabelBMFont::create("", "bigFont.fnt");
+            f->m_totalSizeLabel->setPosition(winSize / 2.0f + CCPoint { 95.0f, (showOverallSize * 6.0f) - 122.0f });
             f->m_totalSizeLabel->setID("total-size-label"_spr);
             addChild(f->m_totalSizeLabel, 10);
         }
 
         if (showOverallSize) {
-            f->m_overallSizeLabel = CCLabelBMFont::create(fmt::format("Overall Size: {}",
-                LevelSize::getSizeString(getTotalSize(getLevelArray()))).c_str(), "bigFont.fnt");
-            f->m_overallSizeLabel->setScale(0.4f);
-            f->m_overallSizeLabel->limitLabelWidth(130.0f, 0.4f, 0.0f);
-            f->m_overallSizeLabel->setPosition(winSize / 2.0f + CCPoint { 95.0f, -122.0f - (showTotalSize * 5.0f) });
+            f->m_overallSizeLabel = CCLabelBMFont::create("", "bigFont.fnt");
+            f->m_overallSizeLabel->setPosition(winSize / 2.0f + CCPoint { 95.0f, (showTotalSize * 5.0f) - 122.0f });
             f->m_overallSizeLabel->setID("overall-size-label"_spr);
             addChild(f->m_overallSizeLabel, 10);
         }
 
+        updateSizeLabels();
+
         return true;
+    }
+
+    static std::string getTotalSizeString(CCArray* levels) {
+        auto levelsArray = reinterpret_cast<GJGameLevel**>(levels->data->arr);
+        return LevelSize::getSizeString(std::accumulate<GJGameLevel**, uint64_t>(
+            levelsArray, levelsArray + levels->data->num, 0,
+            [](uint64_t acc, GJGameLevel* level) {
+                return acc + level->m_levelString.size();
+            }
+        ));
+    }
+
+    void updateSizeLabels() {
+        auto f = m_fields.self();
+        if (f->m_totalSizeLabel) {
+            f->m_totalSizeLabel->setString(fmt::format("Total Size: {}", getTotalSizeString(m_list->m_listView->m_entries)).c_str());
+            f->m_totalSizeLabel->limitLabelWidth(130.0f, 0.4f, 0.0f);
+        }
+        if (f->m_overallSizeLabel) {
+            f->m_overallSizeLabel->setString(fmt::format("Overall Size: {}", getTotalSizeString(getLevelArray())).c_str());
+            f->m_overallSizeLabel->limitLabelWidth(130.0f, 0.4f, 0.0f);
+        }
     }
 
     void onSizeSort(CCObject* sender) {
@@ -89,7 +100,6 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
 
         static_cast<ButtonSprite*>(static_cast<CCMenuItemSprite*>(sender)->getNormalImage())->updateBGImage(
             sizeSortEnabled() ? "GJ_button_02.png" : "GJ_button_01.png");
-        static_cast<CCMenuItemSpriteExtra*>(sender)->updateSprite();
 
         sortLevelsBySize();
     }
@@ -131,14 +141,6 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
         if (sizeSortEnabled()) sortLevelsBySize();
         else LevelBrowserLayer::setupLevelBrowser(levels);
 
-        auto f = m_fields.self();
-        if (f->m_totalSizeLabel) {
-            f->m_totalSizeLabel->setString(fmt::format("Total Size: {}", LevelSize::getSizeString(getTotalSize(m_list->m_listView->m_entries))).c_str());
-            f->m_totalSizeLabel->limitLabelWidth(130.0f, 0.4f, 0.0f);
-        }
-        if (f->m_overallSizeLabel) {
-            f->m_overallSizeLabel->setString(fmt::format("Overall Size: {}", LevelSize::getSizeString(getTotalSize(getLevelArray()))).c_str());
-            f->m_overallSizeLabel->limitLabelWidth(130.0f, 0.4f, 0.0f);
-        }
+        updateSizeLabels();
     }
 };

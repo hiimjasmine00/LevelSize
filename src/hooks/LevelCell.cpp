@@ -6,18 +6,18 @@ using namespace geode::prelude;
 
 class $modify(LSLevelCell, LevelCell) {
     static void onModify(ModifyBase<ModifyDerive<LSLevelCell, LevelCell>>& self) {
-        (void)self.getHook("LevelCell::loadFromLevel").inspect([](Hook* hook) {
+        self.getHook("LevelCell::loadFromLevel").inspect([](Hook* hook) {
             auto mod = Mod::get();
             hook->setAutoEnable(mod->getSettingValue<bool>("show-size"));
 
             listenForSettingChangesV3<bool>("show-size", [hook](bool value) {
-                (void)(value ? hook->enable().inspectErr([](const std::string& err) {
-                    log::error("Failed to enable LevelCell::loadFromLevel hook: {}", err);
-                }) : hook->disable().inspectErr([](const std::string& err) {
-                    log::error("Failed to disable LevelCell::loadFromLevel hook: {}", err);
-                }));
+                hook->toggle(value).inspectErr([](const std::string& err) {
+                    log::error("Failed to toggle LevelCell::loadFromLevel hook: {}", err);
+                });
             }, mod);
-        }).inspectErr([](const std::string& err) { log::error("Failed to get LevelCell::loadFromLevel hook: {}", err); });
+        }).inspectErr([](const std::string& err) {
+            log::error("Failed to get LevelCell::loadFromLevel hook: {}", err);
+        });
     }
 
     void loadFromLevel(GJGameLevel* level) {
@@ -38,7 +38,7 @@ class $modify(LSLevelCell, LevelCell) {
                 auto whiteSize = isDaily || Mod::get()->getSettingValue<bool>("white-size");
 
                 auto sizeLabel = CCLabelBMFont::create(LevelSize::getSizeString(level->m_levelString.size()).c_str(), "chatFont.fnt");
-                sizeLabel->setPosition({ 363.0f - isDaily * 17.0f, 1.0f - isDaily * 6.0f });
+                sizeLabel->setPosition({ 346.0f + isDaily * 17.0f, 1.0f - isDaily * 6.0f });
                 sizeLabel->setScale(0.6f - m_compactView * 0.15f);
                 sizeLabel->setAnchorPoint({ 1.0f, 0.0f });
                 sizeLabel->setColor({

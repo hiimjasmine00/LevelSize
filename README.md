@@ -8,4 +8,4 @@ Local and saved level sizes.
 - A label that shows the overall size of the local or saved levels in the current folder
 
 ## License
-This mod is licensed under the [MIT License](./LICENSE).
+This mod is licensed under the [MIT License](https://github.com/hiimjasmine00/LevelSize/blob/master/LICENSE).

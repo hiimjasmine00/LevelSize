@@ -1,12 +1,12 @@
 {
-    "geode": "4.6.1",
+    "geode": "4.8.0",
     "gd": {
         "win": "2.2074",
         "mac": "2.2074",
         "android": "2.2074",
         "ios": "2.2074"
     },
-    "version": "v1.2.8",
+    "version": "v1.2.9",
     "id": "hiimjustin000.level_size",
     "name": "Level Size",
     "developer": "hiimjasmine00",

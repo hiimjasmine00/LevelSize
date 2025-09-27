@@ -60,7 +60,7 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
 
         if (showOverallSize) {
             f->m_overallSizeLabel = CCLabelBMFont::create("", "bigFont.fnt");
-            f->m_overallSizeLabel->setPosition(winSize / 2.0f + CCPoint { 95.0f, (showTotalSize * 5.0f) - 122.0f });
+            f->m_overallSizeLabel->setPosition(winSize / 2.0f + CCPoint { 95.0f, (showTotalSize * -5.0f) - 122.0f });
             f->m_overallSizeLabel->setID("overall-size-label"_spr);
             addChild(f->m_overallSizeLabel, 10);
         }

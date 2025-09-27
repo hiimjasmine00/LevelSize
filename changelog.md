@@ -1,4 +1,7 @@
 # Level Size Changelog
+## v1.2.10 (2025-09-26)
+- Fixed the position of the overall size label when both total size and overall size labels are visible (Am I blind?)
+
 ## v1.2.9 (2025-09-21)
 - Fixed the level size label on online levels (Why did this take three months to fix?)
 

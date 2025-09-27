@@ -9,13 +9,11 @@ endif()
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(GEODE_DISABLE_PRECOMPILED_HEADERS ON)
 
-project(LevelSize VERSION 1.2.9)
+project(LevelSize VERSION 1.2.10)
 
-add_library(${PROJECT_NAME} SHARED
-    src/hooks/LevelBrowserLayer.cpp
-    src/hooks/LevelCell.cpp
-    src/LevelSize.cpp
-)
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
+
+add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
 if (NOT DEFINED ENV{GEODE_SDK})
     message(FATAL_ERROR "Unable to find Geode SDK! Please define GEODE_SDK environment variable to point to Geode")

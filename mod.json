@@ -1,12 +1,12 @@
 {
-    "geode": "4.8.0",
+    "geode": "4.9.0",
     "gd": {
         "win": "2.2074",
         "mac": "2.2074",
         "android": "2.2074",
         "ios": "2.2074"
     },
-    "version": "v1.2.10",
+    "version": "v1.3.0",
     "id": "hiimjustin000.level_size",
     "name": "Level Size",
     "developer": "hiimjasmine00",
@@ -17,6 +17,11 @@
         ]
     },
     "settings": {
+        "general": {
+            "name": "General",
+            "description": "General settings.",
+            "type": "title"
+        },
         "show-size": {
             "name": "Show Level Size",
             "description": "Whether or not to show the size of a level.",
@@ -35,11 +40,63 @@
             "type": "bool",
             "default": true
         },
+        "local-levels": {
+            "name": "Local Levels",
+            "description": "Settings for local levels.",
+            "type": "title"
+        },
+        "local-show-size": {
+            "name": "Show Level Size",
+            "description": "Whether or not to show the size of a local level.",
+            "type": "bool",
+            "enable-if": "show-size",
+            "default": true
+        },
+        "local-show-total-size": {
+            "name": "Show Total Size",
+            "description": "Whether or not to show the total size of the local levels on the current page.",
+            "type": "bool",
+            "enable-if": "show-total-size",
+            "default": true
+        },
+        "local-show-overall-size": {
+            "name": "Show Overall Size",
+            "description": "Whether or not to show the overall size of all local levels in the current folder.",
+            "type": "bool",
+            "enable-if": "show-overall-size",
+            "default": true
+        },
+        "saved-levels": {
+            "name": "Saved Levels",
+            "description": "Settings for saved levels.",
+            "type": "title"
+        },
+        "saved-show-size": {
+            "name": "Show Level Size",
+            "description": "Whether or not to show the size of a saved level.",
+            "type": "bool",
+            "enable-if": "show-size",
+            "default": true
+        },
+        "saved-show-total-size": {
+            "name": "Show Total Size",
+            "description": "Whether or not to show the total size of the saved levels on the current page.",
+            "type": "bool",
+            "enable-if": "show-total-size",
+            "default": true
+        },
+        "saved-show-overall-size": {
+            "name": "Show Overall Size",
+            "description": "Whether or not to show the overall size of all saved levels in the current folder.",
+            "type": "bool",
+            "enable-if": "show-overall-size",
+            "default": true
+        },
         "white-size": {
             "name": "White Size",
             "description": "Whether or not to show the size of a saved level in white.",
             "type": "bool",
-            "enable-if": "show-size",
+            "enable-if": "show-size && saved-show-size",
             "default": false
         }
     },

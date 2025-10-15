@@ -7,7 +7,6 @@
 #include <Geode/binding/GJSearchObject.hpp>
 #include <Geode/binding/LocalLevelManager.hpp>
 #include <Geode/modify/LevelBrowserLayer.hpp>
-#include <numeric>
 
 using namespace geode::prelude;
 
@@ -46,21 +45,28 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
         sizeSortMenu->addChild(sizeSortToggler);
 
         auto f = m_fields.self();
-        auto mod = Mod::get();
-        auto showTotalSize = mod->getSettingValue<bool>("show-total-size");
-        auto showOverallSize = mod->getSettingValue<bool>("show-overall-size");
-        if (!showTotalSize && !showOverallSize) return true;
+
+        auto showTotalSize = LevelSize::get("show-total-size");
+        auto showOverallSize = LevelSize::get("show-overall-size");
+        if (searchType == SearchType::MyLevels) {
+            showTotalSize = showTotalSize && LevelSize::get("local-show-total-size");
+            showOverallSize = showOverallSize && LevelSize::get("local-show-overall-size");
+        }
+        else if (searchType == SearchType::SavedLevels) {
+            showTotalSize = showTotalSize && LevelSize::get("saved-show-total-size");
+            showOverallSize = showOverallSize && LevelSize::get("saved-show-overall-size");
+        }
 
         if (showTotalSize) {
             f->m_totalSizeLabel = CCLabelBMFont::create("", "bigFont.fnt");
-            f->m_totalSizeLabel->setPosition(winSize / 2.0f + CCPoint { 95.0f, (showOverallSize * 6.0f) - 122.0f });
+            f->m_totalSizeLabel->setPosition(winSize / 2.0f + CCPoint { 95.0f, showOverallSize ? -116.0f : -122.0f });
             f->m_totalSizeLabel->setID("total-size-label"_spr);
             addChild(f->m_totalSizeLabel, 10);
         }
 
         if (showOverallSize) {
             f->m_overallSizeLabel = CCLabelBMFont::create("", "bigFont.fnt");
-            f->m_overallSizeLabel->setPosition(winSize / 2.0f + CCPoint { 95.0f, (showTotalSize * -5.0f) - 122.0f });
+            f->m_overallSizeLabel->setPosition(winSize / 2.0f + CCPoint { 95.0f, showTotalSize ? -127.0f : -122.0f });
             f->m_overallSizeLabel->setID("overall-size-label"_spr);
             addChild(f->m_overallSizeLabel, 10);
         }
@@ -71,10 +77,12 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
     }
 
     static std::string getTotalSizeString(CCArray* levels) {
-        auto levelsArray = reinterpret_cast<GJGameLevel**>(levels->data->arr);
-        return LevelSize::getSizeString(std::accumulate<GJGameLevel**, uint64_t>(
-            levelsArray, levelsArray + levels->data->num, 0,
-            [](uint64_t acc, GJGameLevel* level) {
+        if (!levels) return "0 B";
+        auto levelsData = levels->data;
+        auto levelsArray = reinterpret_cast<GJGameLevel**>(levelsData->arr);
+        return LevelSize::getSizeString(std::ranges::fold_left(
+            levelsArray, levelsArray + levelsData->num, 0ull,
+            [](unsigned long long acc, GJGameLevel* level) {
                 return acc + level->m_levelString.size();
             }
         ));
@@ -105,11 +113,14 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
     }
 
     CCArray* getLevelArray() {
-        switch (m_searchObject->m_searchType) {
-            case SearchType::MyLevels: return LocalLevelManager::get()->getCreatedLevels(m_searchObject->m_folder);
-            case SearchType::SavedLevels: return GameLevelManager::get()->getSavedLevels(false, m_searchObject->m_folder);
-            default: return nullptr;
+        auto searchType = m_searchObject->m_searchType;
+        if (searchType == SearchType::MyLevels) {
+            return LocalLevelManager::get()->getCreatedLevels(m_searchObject->m_folder);
         }
+        else if (searchType == SearchType::SavedLevels) {
+            return GameLevelManager::get()->getSavedLevels(false, m_searchObject->m_folder);
+        }
+        else return nullptr;
     }
 
     void sortLevelsBySize() {
@@ -120,8 +131,9 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
             auto oldLevels = levels;
             levels = CCArray::create();
             levels->addObjectsFromArray(oldLevels);
-            auto levelsArray = reinterpret_cast<GJGameLevel**>(levels->data->arr);
-            std::sort(levelsArray, levelsArray + levels->count(), [](GJGameLevel* a, GJGameLevel* b) {
+            auto levelsData = levels->data;
+            auto levelsArray = reinterpret_cast<GJGameLevel**>(levelsData->arr);
+            std::sort(levelsArray, levelsArray + levelsData->num, [](GJGameLevel* a, GJGameLevel* b) {
                 return a->m_levelString.size() > b->m_levelString.size();
             });
         }
@@ -136,7 +148,9 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
 
     void setupLevelBrowser(CCArray* levels) {
         auto searchType = m_searchObject->m_searchType;
-        if (searchType != SearchType::MyLevels && searchType != SearchType::SavedLevels) return LevelBrowserLayer::setupLevelBrowser(levels);
+        if (searchType != SearchType::MyLevels && searchType != SearchType::SavedLevels) {
+            return LevelBrowserLayer::setupLevelBrowser(levels);
+        }
 
         if (sizeSortEnabled()) sortLevelsBySize();
         else LevelBrowserLayer::setupLevelBrowser(levels);

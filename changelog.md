@@ -1,4 +1,8 @@
 # Level Size Changelog
+## v1.3.0 (2025-10-14)
+- Separated the mod settings into local and saved levels
+- Changed the appearance of the local level size label to match the saved level size label
+
 ## v1.2.10 (2025-09-26)
 - Fixed the position of the overall size label when both total size and overall size labels are visible (Am I blind?)
 

@@ -20,7 +20,9 @@ static std::unordered_map<std::string_view, BoolSettingV3*> settings = [] {
         "white-size"
     };
     for (auto key : keys) {
-        settings.emplace(key, std::static_pointer_cast<BoolSettingV3>(msm->get(key)).get());
+        if (auto setting = std::static_pointer_cast<BoolSettingV3>(msm->get(key))) {
+            settings.emplace(key, setting.get());
+        }
     }
     return settings;
 }();

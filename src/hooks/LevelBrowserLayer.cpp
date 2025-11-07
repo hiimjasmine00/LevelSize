@@ -7,6 +7,7 @@
 #include <Geode/binding/GJSearchObject.hpp>
 #include <Geode/binding/LocalLevelManager.hpp>
 #include <Geode/modify/LevelBrowserLayer.hpp>
+#include <jasmine/setting.hpp>
 
 using namespace geode::prelude;
 
@@ -46,15 +47,15 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
 
         auto f = m_fields.self();
 
-        auto showTotalSize = LevelSize::get("show-total-size");
-        auto showOverallSize = LevelSize::get("show-overall-size");
+        auto showTotalSize = jasmine::setting::getValue<bool>("show-total-size");
+        auto showOverallSize = jasmine::setting::getValue<bool>("show-overall-size");
         if (searchType == SearchType::MyLevels) {
-            showTotalSize = showTotalSize && LevelSize::get("local-show-total-size");
-            showOverallSize = showOverallSize && LevelSize::get("local-show-overall-size");
+            showTotalSize = showTotalSize && jasmine::setting::getValue<bool>("local-show-total-size");
+            showOverallSize = showOverallSize && jasmine::setting::getValue<bool>("local-show-overall-size");
         }
         else if (searchType == SearchType::SavedLevels) {
-            showTotalSize = showTotalSize && LevelSize::get("saved-show-total-size");
-            showOverallSize = showOverallSize && LevelSize::get("saved-show-overall-size");
+            showTotalSize = showTotalSize && jasmine::setting::getValue<bool>("saved-show-total-size");
+            showOverallSize = showOverallSize && jasmine::setting::getValue<bool>("saved-show-overall-size");
         }
 
         if (showTotalSize) {

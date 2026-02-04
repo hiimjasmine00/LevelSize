@@ -7,18 +7,19 @@
 #include <Geode/binding/GJSearchObject.hpp>
 #include <Geode/binding/LocalLevelManager.hpp>
 #include <Geode/modify/LevelBrowserLayer.hpp>
+#include <jasmine/array.hpp>
 #include <jasmine/setting.hpp>
 
 using namespace geode::prelude;
+
+static bool localSortBySize = false;
+static bool savedSortBySize = false;
 
 class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
     struct Fields {
         CCLabelBMFont* m_totalSizeLabel;
         CCLabelBMFont* m_overallSizeLabel;
     };
-
-    inline static bool localSortBySize = false;
-    inline static bool savedSortBySize = false;
 
     bool sizeSortEnabled() {
         auto searchType = m_searchObject->m_searchType;
@@ -82,8 +83,8 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
         auto levelsData = levels->data;
         auto levelsArray = reinterpret_cast<GJGameLevel**>(levelsData->arr);
         return LevelSize::getSizeString(std::ranges::fold_left(
-            levelsArray, levelsArray + levelsData->num, 0ull,
-            [](unsigned long long acc, GJGameLevel* level) {
+            levelsArray, levelsArray + levelsData->num, (uint64_t)0,
+            [](uint64_t acc, GJGameLevel* level) {
                 return acc + level->m_levelString.size();
             }
         ));
@@ -132,9 +133,7 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
             auto oldLevels = levels;
             levels = CCArray::create();
             levels->addObjectsFromArray(oldLevels);
-            auto levelsData = levels->data;
-            auto levelsArray = reinterpret_cast<GJGameLevel**>(levelsData->arr);
-            std::sort(levelsArray, levelsArray + levelsData->num, [](GJGameLevel* a, GJGameLevel* b) {
+            std::ranges::sort(jasmine::array::toSpan<GJGameLevel>(levels), [](GJGameLevel* a, GJGameLevel* b) {
                 return a->m_levelString.size() > b->m_levelString.size();
             });
         }

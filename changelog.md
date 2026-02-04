@@ -1,4 +1,7 @@
 # Level Size Changelog
+## v1.3.1 (2026-02-04)
+- Ported to Geometry Dash v2.208 / Geode SDK v5.0.0
+
 ## v1.3.0 (2025-10-14)
 - Separated the mod settings into local and saved levels
 - Changed the appearance of the local level size label to match the saved level size label

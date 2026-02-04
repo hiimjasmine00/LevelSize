@@ -12,8 +12,8 @@
 
 using namespace geode::prelude;
 
-static bool localSortBySize = false;
-static bool savedSortBySize = false;
+bool localSortBySize = false;
+bool savedSortBySize = false;
 
 class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
     struct Fields {

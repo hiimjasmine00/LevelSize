@@ -7,7 +7,6 @@
 #include <Geode/binding/GJSearchObject.hpp>
 #include <Geode/binding/LocalLevelManager.hpp>
 #include <Geode/modify/LevelBrowserLayer.hpp>
-#include <jasmine/array.hpp>
 #include <jasmine/setting.hpp>
 
 using namespace geode::prelude;
@@ -133,7 +132,7 @@ class $modify(LSLevelBrowserLayer, LevelBrowserLayer) {
             auto oldLevels = levels;
             levels = CCArray::create();
             levels->addObjectsFromArray(oldLevels);
-            std::ranges::sort(jasmine::array::toSpan<GJGameLevel>(levels), [](GJGameLevel* a, GJGameLevel* b) {
+            std::ranges::sort(CCArrayExt<GJGameLevel>(levels), [](GJGameLevel* a, GJGameLevel* b) {
                 return a->m_levelString.size() > b->m_levelString.size();
             });
         }

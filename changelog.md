@@ -1,4 +1,7 @@
 # Level Size Changelog
+## v1.3.2 (2026-11-26)
+- Ported to Geometry Dash v2.209 / Geode SDK v6.0.0
+
 ## v1.3.1 (2026-02-14)
 - Ported to Geometry Dash v2.208 / Geode SDK v5.0.0
 
